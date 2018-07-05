@@ -1,0 +1,60 @@
+1. Step 1: Tạo project.
+2. Step 2: Thêm thư viện Dagger 2
+        annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+        implementation 'com.google.dagger:dagger:2.13'
+3. Step 3: Tạo các package theo cấu trúc mvp - di
+    - model: Chứa các class Model của project
+    - view: Chứa các activity, fragment.
+    - presenter: Cầu nối giữa view và model
+    - di: Chứa các thành phần của di
+    - application: Chứa class kế thừa application
+    - contract: Chứa các interface phục vụ cho model, view, presenter.
+
+4. Step 4: Tạo interface MainContract chứa các interface phục vụ cho mvp của MainActivity:
+    - interface ViewCallBack: Chứa các phương thức callback của MainActivity
+        + showProgress(): Hiển thị progressbar
+        + hideProgess(): Đóng progressbar
+        + setQuote(String str): Hiển thị quote lên textview
+    - interface ModelCallBack: Chứa interface và phương thức callback của model
+        + interface OnFinishedListener: Interface chứa hàm callback(onFinished()) khi load quote mới thành công.
+        + getNextQuote(OnFinishedListener onFinishedListener): Lấy ra nextquote.
+    - interface PresenterCallBack: Chứa các hàm callback của MainPresenter:
+        + onButtonClick(): Xử lý sự kiện click cho button.
+        + onDestroy(): Xử lý vòng đời của activity.
+
+5. Step 5: Tạo class MainPresenterImpl kế thừa interface ViewCallBack, ModelCallBack (implement các method callback)
+    - Khai báo các biến instance của MainViewCallBack và Model.
+    - Tạo constructor MainPresenterImpl vs param là MainViewCallBack và Model.
+    - Trong các phương thức implement:
+        + onFinished(String str): Set quote, đóng progressbar.
+        + onButtonClick(): hiển thị progressbar và lấy qoute.
+        + onDestroyt(): hủy instance của mainView.
+
+6. Step 6: Tạo MyApplication kế thừa Application.
+
+7. Step 7: Tạo package component, module, scope trong package di.
+
+8. Step 8: Tạo class AppModule cung cấp các thành phần của app (MyApplication).
+
+9. Step 9: Tạo class ContextModule cung cấp thành phần Context.
+
+10 Step 10: Tạo class DataModule cung cấp Model.
+
+11. Step 11: Tạo class MvpModule cung cấp các thành phần của MVP.
+
+12. Step 12: Tạo AppComponent inject các thành phần đc cung cấp trong phạm vi application
+(nên có annotation)
+
+13. Step 13: Tạo ActivityComponent inject các thành phần đc cung cấp phạm vi activity()
+    - inject Presenter vào MainActivity.
+
+14 Step 14: Rebuild project.
+
+15 Step 15: Vào MyApplication:
+    - Khai báo instance của AppComponent;
+    - onCreate(): Cấu hình instance của appComponent(phụ thuộc vào các modules trong AppComponent).
+    - getAppComponent(): Returen instance appComponent.
+    - getApplication(): Return MyApplication.
+    - Thêm MyApplication vào AndroidManifest.xml.
+
+16 Step 16: MainActivity
